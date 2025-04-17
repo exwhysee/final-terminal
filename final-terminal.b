@@ -1,6 +1,11 @@
 #!/bin/bash
 # Simple TUI game with emoji locations
 
+# trap ensures reset runs even if the script
+# crashes or is interrupted or exits with error
+# code 0
+trap 'tput reset; tput cnorm; exit' INT TERM EXIT
+
 tput civis
 
 # Emoji map: Fruits and animals
