@@ -57,10 +57,13 @@ emoji_table=(
 # (\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)
 # (/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)
 
+clear
+
 tput cup 48 0 && \
 echo "[WASD or Arrows] Move | Ctrl+C to Exit"
 
-echo "emoji_map:"
+tput cup 0 0 && \
+echo "emoji table:"
 for emoji in "${emoji_table[@]}"; do
   echo "$emoji"
 done
@@ -79,13 +82,17 @@ while true; do
   # Display player on map
   tput cup $y $x && echo "$player"
 
-  # Read input for movement
-  IFS= read -rsn1 input
-  [[ $input == $'\e' ]] && { IFS= read -rsn2 k; input+=$k; }
+  read -rsn1 key
+  if [[ $key == $'\e' ]]; then
+    read -rsn2 rest
+    key+=$rest
+  fi
 
-  # Move player based on input
-  [[ $input == a || $input == $'\e[D' ]] && ((x--))
-  [[ $input == d || $input == $'\e[C' ]] && ((x++))
-  [[ $input == w || $input == $'\e[A' ]] && ((y--))
-  [[ $input == s || $input == $'\e[B' ]] && ((y++))
+  case "$key" in
+    $'\e[A' | w) ((y--)) ;;
+    $'\e[B' | s) ((y++)) ;;
+    $'\e[C' | d) ((x++)) ;;
+    $'\e[D' | a) ((x--)) ;;
+    *) pass ;;
+  esac
 done
