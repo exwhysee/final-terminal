@@ -1,15 +1,21 @@
 #!/bin/bash
-# Simple TUI game with emoji locations
+# Simple TUI game with characters
 
-# trap ensures reset runs even if the script
-# crashes or is interrupted or exits with error
+# trap ensures tput reset runs even if the script
+# crashes or is interrupted or exits with exit
 # code 0
 trap 'tput reset; tput cnorm; exit' INT TERM EXIT
 
 tput civis
 
-# Emoji map: Fruits and animals
-map=(
+#PLAYER="@"
+player="🐒"
+
+# AA 69
+start_x=$(( RANDOM % 69))
+start_y=$(( RANDOM % 22))
+
+emoji_table=(
   "🐍  2,2"
   "🍎  5,5"
   "🍓  8,8"
@@ -18,18 +24,60 @@ map=(
   "🦁  15,4"
 )
 
-# Display emoji map on top
-clear
-echo "Emoji map:"
-for entry in "${map[@]}"; do
-  echo "$entry"
+# (\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)
+# (/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)
+# (\o/)//////////////////////////o////////(\o/)
+# (/|\)/////////O////////////O////////////(/|\)
+# (\o/)////////oOo//////////oOo///////////(\o/)
+# (/|\)/.oOo////o///.oOoO'///o///O//.oOo//(/|\)
+# (\o/)/`Ooo.///O///O///o////O///o//O/////(\o/)
+# (/|\)/////O///o///o///O////o///O//o/////(/|\)
+# (\o/)/`OoO'///`oO/`OoO'o///`oO/o'/`OoO'/(\o/)
+# (/|\)///////////////////////////////////(/|\)
+# (\o/)///////////////////////////////////(\o/)
+# (/|\)//o////////////////////////////////(/|\)
+# (\o/)/O/////////////////////////////////(\o/)
+# (/|\)/o/////////////////////////////////(/|\)
+# (\o/)/O/////////////////////////////////(\o/)
+# (/|\)/o//.oOoO'/O///o/.oOo./`OoOo.//////(/|\)
+# (\o/)/O//O///o//o///O/OooO'//o//////////(\o/)
+# (/|\)/o//o///O//O///o/O//////O//////////(/|\)
+# (\o/)/Oo/`OoO'o/`OoOO/`OoO'//o//////////(\o/)
+# (/|\)///////////////o///////////////////(/|\)
+# (\o/)////////////OoO'///////////////////(\o/)
+# (/|\)///////////////////////////////////(/|\)
+# (\o/)/o/////////////////////////////////(\o/)
+# (/|\)/////////////O/////////////////////(/|\)
+# (\o/)////////////oOo////////////////////(\o/)
+# (/|\)/O//'OoOo.///o///`OoOo./.oOo.//////(/|\)
+# (\o/)/o///o///O///O////o/////O///o//////(\o/)
+# (/|\)/O///O///o///o////O/////o///O//////(/|\)
+# (\o/)/o'//o///O///`oO//o/////`OoO'//////(\o/)
+# (/|\)///////////////////////////////////(/|\)
+# (\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)(\o/)
+# (/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)(/|\)
+
+tput cup 48 0 && \
+echo "[WASD or Arrows] Move | Ctrl+C to Exit"
+
+echo "emoji_map:"
+for emoji in "${emoji_table[@]}"; do
+  echo "$emoji"
 done
 
-x=10; y=5
+# .------..------..------..------..------.      .------..------..------..------.
+# |L.--. ||A.--. ||Y.--. ||E.--. ||R.--. |.-.   |O.--. ||V.--. ||E.--. ||R.--. |
+# | :/\: || (\/) || (\/) || (\/) || :(): ((6))  | :/\: || :(): || (\/) || :(): |
+# | (__) || :\/: || :\/: || :\/: || ()() |'-.-. | :\/: || ()() || :\/: || ()() |
+# | '--'L|| '--'A|| '--'Y|| '--'E|| '--'R| ((9))| '--'O|| '--'V|| '--'E|| '--'R|
+# `------'`------'`------'`------'`------'  '-' `------'`------'`------'`------'
+
+x=$start_x
+y=$start_y
+
 while true; do
-  # Display player '@' on map
-  tput cup $y $x; echo "@"
-  tput cup 20 0; echo "[WASD or Arrows] Move | Ctrl+C to Exit"
+  # Display player on map
+  tput cup $y $x && echo "$player"
 
   # Read input for movement
   IFS= read -rsn1 input
@@ -40,16 +88,4 @@ while true; do
   [[ $input == d || $input == $'\e[C' ]] && ((x++))
   [[ $input == w || $input == $'\e[A' ]] && ((y--))
   [[ $input == s || $input == $'\e[B' ]] && ((y++))
-
-  # Clear screen for the next frame
-  clear
-  # Print the updated emoji map
-  echo "Emoji map:"
-  for entry in "${map[@]}"; do
-    echo "$entry"
-  done
-  # Print player's position
-  tput cup $y $x; echo "@"
-  tput cup 20 0; echo "[WASD or Arrows] Move | Ctrl+C to Exit"
 done
-
